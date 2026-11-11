@@ -1,8 +1,8 @@
 {
   "$schema": "../schema/plugin.schema.json",
-  "id": "<owner>/dsh-read-image",
+  "id": "hanjr/dsh-read-image",
   "name": "dsh-read-image",
-  "repository": "https://github.com/<owner>/dsh-read-image",
+  "repository": "https://github.com/hanjr/dsh-read-image",
   "category": "tools",
   "description": {
     "en": "Read images through a separate multimodal model so a text-only DSH session can still understand pictures, with a composer switch and model picker.",
