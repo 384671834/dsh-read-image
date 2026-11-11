@@ -220,3 +220,52 @@ topics 已设：`dsh-plugin`(关键) / `deepseek-harness` / `dsh` / `vision` / `
 ### 待办
 - `pnpm login` + `pnpm publish --access public`（广场安装命令此时才会出现）
 - 撤销已泄露的 fine-grained token；经典 token 用完即删
+
+---
+
+## 11 · 发布到 npm（2026-11-11）
+
+**结果**：`dsh-read-image@0.1.0` 已上架
+→ https://www.npmjs.com/package/dsh-read-image
+`latest = 0.1.0`，`license: MIT`，`engines.dsh: >=0.2.2-rc.1 <0.3.0-0`，
+`dsh.bundle.patch: ./cordis.patch.yml`。发布出去 18,504 字节，10 个文件。
+
+`pnpm add dsh-read-image@0.1.0` 实测可用。
+
+### 三次 403 的真实原因（这次最费劲）
+
+前两次报：
+```
+[E403] Two-factor authentication or granular access token with bypass 2fa enabled is required
+```
+我以为是 token 没开 "Bypass 2FA"，**判断错了**。真正原因用一次对照实验定位：
+
+> 把**故意写错的 token** 写进临时 npmrc，再跑 `whoami`，**仍然返回 hanjr**。
+
+说明 `NPM_CONFIG_USERCONFIG` 那个临时配置**根本没被 pnpm 采用**。
+pnpm 把登录凭据存在自己的 **`~/Library/Preferences/pnpm/auth.ini`**（`pnpm config get userconfig` 返回 `undefined`，
+`globalconfig` 指向 `~/Library/Preferences/pnpm/config.yaml`），
+而我们一直用的是之前交互登录那个**需要 OTP 的 token**。
+
+改成备份并替换 `auth.ini` 后，**一次就发布成功**。
+
+> 教训：发布类操作失败时，先证明"你以为在用的凭据真的被用上了"，再怀疑权限。
+> 方法就是拿一个必然失败的凭据做对照。
+
+### pnpm 11 的分阶段发布
+
+`pnpm publish` 在新包上走 staged publishing：先发 `0.0.0-stage` 占位，再暂存真实版本。
+过程中出现过的两个误导性报错：
+- `409 Cannot publish over previously staged version "0.1.0"`
+- `409 Cannot stage previously published version "0.1.0"`
+
+都出现在 **0.1.0 其实已经发布成功**之后，而 packument 还返回旧的缓存（只显示 `0.0.0-stage`）。
+直接查 `GET /dsh-read-image/0.1.0` → 200 才确认成功。
+最终 pnpm 自动清理了占位版本（`0.0.0-stage` 现在 404），`latest` 正确指向 `0.1.0`。
+
+> 教训：registry 的 packument 有缓存；确认某个版本是否存在，请直接查版本端点。
+
+### 收尾
+- 已还原原 `auth.ini`（备份 `auth.ini.bak_20261111_134845` 保留）
+- 已删除 `~/.npm_auth_token`
+- ⚠️ 会话中曾两次把 npm token 明文贴进对话，**均已失效或需撤销**
