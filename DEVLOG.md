@@ -186,3 +186,37 @@ pnpm pack → dsh-read-image-0.1.0.tgz  (20K)
 
 **未完成的一步**：`npm publish` 需要 npm 账号与 scope，本机既无 npm CLI、
 也无 `~/.npmrc`/token。这一步必须由账号持有者执行。
+
+---
+
+## 10 · 发布（2026-11-11）
+
+### 账号澄清
+用户报的是 `hanjr (384671834)`，实际是**两个账号**：
+`HanJr`（id 39350982，2018 年建，test/forumAndCrm/DungeonExplorer）与
+`384671834`（id 55585649，2019 年建，yolov5-5.0-Polygon/PaddleOCR-torchversion/C-Execise）。
+SSH key 与 token 都属于**后者**，故 owner 定为 `384671834`。
+
+### Git
+SSH 认证通过（`Hi 384671834!`）。仓库
+**https://github.com/384671834/dsh-read-image** 已建（public），5 个提交，
+topics 已设：`dsh-plugin`(关键) / `deepseek-harness` / `dsh` / `vision` / `multimodal` / `image`。
+
+### 插件广场
+广场是**目录驱动**，不是提交流程：读 catalog JSON，安装以 npm `latest` 为准。
+两条收录路径：带 `dsh-plugin` topic 的仓库被定时扫描自动收录；或向
+`imsai-sh/awesome-deepseek-harness-plugins` 提 PR 新增**一个** `catalog/plugins/*.json`。
+
+已 fork 并提交 PR **#907**（open, mergeable, +12/−0, 仅 1 个文件）：
+`catalog/plugins/384671834--dsh-read-image.json`，category=`tools`。
+
+### 两个实测卡点
+1. **fine-grained token 不能建仓库**：`POST /user/repos` → 403
+   `"Resource not accessible by personal access token"`。
+   建库必须用**经典 token**（`ghp_…`，`repo` 或 `public_repo`）或网页。换成经典 token（scope `repo`）后一次成功。
+2. **npm 未发布**：广场只提供 npm 安装，未发 npm 的插件只会以**浏览态**收录
+   （有仓库链接、无安装命令）。故 PR 说明里已注明"未发布 npm"。
+
+### 待办
+- `pnpm login` + `pnpm publish --access public`（广场安装命令此时才会出现）
+- 撤销已泄露的 fine-grained token；经典 token 用完即删
