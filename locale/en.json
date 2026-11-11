@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Vision bridge",
+    "description": "Read images through a configured multimodal model without switching the session model."
+  }
+}

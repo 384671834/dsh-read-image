@@ -1,0 +1,22 @@
+- insert:
+    - id: dsh-vision-bridge
+      name: '@local/dsh-vision-bridge'
+      config:
+        # 开关：false 时工具不注册（模型完全看不到它）
+        enabled: true
+        # 用哪个多模态模型来"看"图；只影响本工具，不改变会话模型
+        model: deepseek-official::deepseek-v4-flash-vision-exp
+        # OpenAI 兼容端点（DeepSeek 官方 / 自建 vLLM / LM Studio 都行）
+        baseURL: https://api.deepseek.com/v1
+        # API key 从环境变量读，不写进配置文件
+        apiKeyEnv: DEEPSEEK_API_KEY
+        # 单张图上限（字节）；超过就拒绝而不是悄悄压缩
+        maxBytes: 1048576
+        # 返回文本的长度上限
+        # 该视觉模型是推理模型，1500 不够（要先想再答）；4000 左右合适
+        maxTokens: 4000
+        # 附加给模型的默认提示词
+        prompt: >-
+          请用中文如实描述这张图：先给一句话总览，再分点列出可见的关键对象、
+          文字内容、数值与异常之处。只描述你确实看到的内容，不要推测。
+          如果需要读具体文字，逐字抄录。

@@ -1,0 +1,12 @@
+{
+  "$schema": "../schema/plugin.schema.json",
+  "id": "<owner>/dsh-read-image",
+  "name": "dsh-read-image",
+  "repository": "https://github.com/<owner>/dsh-read-image",
+  "category": "tools",
+  "description": {
+    "en": "Read images through a separate multimodal model so a text-only DSH session can still understand pictures, with a composer switch and model picker.",
+    "zh": "用独立的多模态模型读图，让纯文本的 DSH 会话也能理解图片；输入框旁提供开关与模型选择。"
+  },
+  "added": "2026-11-11"
+}
